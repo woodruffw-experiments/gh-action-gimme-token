@@ -1,0 +1,33 @@
+name: Give me an OIDC token
+
+permissions:
+  # Needed to access the workflow's OIDC identity.
+  id-token: write
+
+on:
+  workflow_call:
+    # inputs:
+    #   audience:
+    #     description: "The custom audience to set"
+    #     required: false
+    #     type: string
+    outputs:
+      oidc-token:
+        description: "The token"
+        value: ${{ jobs.get-token.outputs.oidc-token }}
+
+jobs:
+  get-token:
+    runs-on: ubuntu-latest
+    outputs:
+      oidc-token: ${{ steps.get-token.outputs.oidc-token }}
+    steps:
+      - name: get-token
+        id: get-token
+        run: |
+          token=$(curl -H \
+            "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sigstore" | \
+          jq -r .value)
+
+          echo "oidc-token=${token}" >> "${GITHUB_OUTPUT}"
