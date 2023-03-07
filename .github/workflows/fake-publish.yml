@@ -1,0 +1,19 @@
+name: Fake publishing workflow
+
+permissions:
+  # Needed to access the workflow's OIDC identity.
+  id-token: write
+
+on:
+  workflow_call:
+  pull_request:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test-pypi-publish
+        uses: trail-of-forks/gh-action-pypi-publish@tob-oidc
+        with:
+          dry_run: true
+          repository_url: https://test.pypi.org/legacy/
