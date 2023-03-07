@@ -16,3 +16,4 @@ jobs:
         uses: trail-of-forks/gh-action-pypi-publish@tob-oidc
         with:
           dry_run: true
+          repository_url: https://test.pypi.org/legacy/
